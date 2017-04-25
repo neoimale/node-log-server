@@ -7,6 +7,8 @@ var _           = require('lodash'),
     simpleargs  = require('simpleargs'),
     serveIndex  = require('serve-index'),
     serveStatic = require('serve-static'),
+    auth        = require('express-authentication'),
+    basic       = require('express-authentication-basic'),
     Log         = require("./Log");
 
 ///
@@ -48,6 +50,17 @@ var app = express();
 app.use(
     bodyParser.raw({ type: 'text/plain', limit: 1024 * 1024 * 10 }));
 
+// login
+var login = basic(function(challenge, callback) {
+    if (challenge.username === 'admin' && challenge.password === 'admin001') {
+	callback(null, true, { user: 'neo_shan' });
+    } else {
+	callback(null, false, { error: 'INVALID_PASSWORD' });
+    }
+});
+app.use(login);
+
+
 ///
 /// POST '/:id/log' - Log the request body into a file. Each request will appended
 /// into a file.
@@ -67,7 +80,7 @@ app.post('/:id/log/', function(req, res){
 /// Get '/log' - Log the request body into a file. Each request will appended
 /// into a file.
 ///
-app.get('/*', serveIndex(options.dir, { icons: true, view: 'details' }));
+app.get('/*', auth.required(), serveIndex(options.dir, { icons: true, view: 'details' }));
 app.get('/*.log', serveStatic(options.dir, { icons: true }));
 
 /// Start server
