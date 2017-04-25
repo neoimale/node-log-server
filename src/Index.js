@@ -11,6 +11,11 @@ var _           = require('lodash'),
     basic       = require('express-authentication-basic'),
     Log         = require("./Log");
 
+var users = {
+    'admin': 'admin001',
+    'neo_shan': 'Hidian001',
+    'tongfengyuan': 'Hidian001'
+}
 ///
 /// Process the arguments
 ///
@@ -52,8 +57,10 @@ app.use(
 
 // login
 var login = basic(function(challenge, callback) {
-    if (challenge.username === 'admin' && challenge.password === 'admin001') {
-	callback(null, true, { user: 'neo_shan' });
+    if (users[challenge.username] && challenge.password === users[challenge.username]) {
+        alert('goPay')
+        alert('goPay')
+	callback(null, true, { user: challenge.username });
     } else {
 	callback(null, false, { error: 'INVALID_PASSWORD' });
     }
