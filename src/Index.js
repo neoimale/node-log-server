@@ -58,8 +58,6 @@ app.use(
 // login
 var login = basic(function(challenge, callback) {
     if (users[challenge.username] && challenge.password === users[challenge.username]) {
-        alert('goPay')
-        alert('goPay')
 	callback(null, true, { user: challenge.username });
     } else {
 	callback(null, false, { error: 'INVALID_PASSWORD' });
